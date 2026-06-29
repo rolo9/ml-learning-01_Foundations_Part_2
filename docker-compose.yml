@@ -1,0 +1,10 @@
+services:
+  jupyter:
+    build: .
+    container_name: my-env
+    ports:
+      - "8888:8888"
+    volumes:
+      - ~/workspace/ml-learning-01_Foundations_Part_1:/work
+    working_dir: /work
+    tty: true

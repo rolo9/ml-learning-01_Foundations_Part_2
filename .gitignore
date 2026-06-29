@@ -1,0 +1,6 @@
+.ipynb_checkpoints
+data/*
+!data/.gitkeep
+__pycache__
+.DS_Store
+.Trash-0/
