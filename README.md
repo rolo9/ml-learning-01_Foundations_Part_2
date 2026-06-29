@@ -8,8 +8,8 @@ Project: **ml-learning-01_Foundations_Part_1**
 # Step0 プロジェクト作成
 
 ```bash
-mkdir ~/workspace/ml-learning-01_Foundations_Part_1
-cd ~/workspace/ml-learning-01_Foundations_Part_1
+mkdir ~/workspace/<ProjectName>
+cd ~/workspace/<ProjectName>
 git init
 ```
 
@@ -40,7 +40,7 @@ touch README.md .gitignore docker-compose.yml Makefile Dockerfile environment.ym
 # Step3 Sublimeでプロジェクトを開く（Sublime Text を使用）
 sublimeについてはかめさんの紹介を参照；https://datawokagaku.com/best_editor/
 ```bash
-subl ~/workspace/ml-learning-01_Foundations_Part_1
+subl　.
 ```
 
 # Step4 .gitignore 設定
@@ -136,11 +136,10 @@ CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--ServerApp.token=''"]
 services:
   jupyter:
     build: .
-    container_name: my-env
     ports:
       - "8888:8888"
     volumes:
-      - ~/workspace/ml-learning-01_Foundations_Part_1:/work
+      - .:/work
     working_dir: /work
     tty: true
 ```
@@ -172,7 +171,7 @@ ps:
 
 # コンテナ内に入る
 shell:
-  docker exec -it my-env bash
+    docker compose exec jupyter bash
 
 # Jupyterをブラウザで開く
 jupyter:
@@ -189,6 +188,9 @@ docker compose build
 ```
 
 # Step10 Docker起動
+
+通常はこちらだけ実行します。
+make build は初回環境構築時、または Dockerfile や environment.yml を変更したときだけ実行します。
 ```bash
 make up
 ```
@@ -230,7 +232,11 @@ git commit -m "update ML workflow"
 
 # Step17 GitHub push
 ```bash
+# 初回のみ
 git push -u origin main
+
+# 2回目以降
+git push
 ```
 
 # 学習フロー
@@ -243,3 +249,44 @@ src に移動
 Notebookからimport
         ↓
 Git保存
+
+## よく使うコマンド
+
+日常的な学習では、以下のコマンドだけ覚えておけば十分です。
+
+| やりたいこと | コマンド | 説明 |
+|--------------|----------|------|
+| 初回環境構築 | `make build` | Dockerイメージを作成する（初回または環境変更時のみ） |
+| 学習開始 | `make up` | コンテナを起動する |
+| Jupyter Labを開く | `make jupyter` | ブラウザでJupyter Labを開く |
+| コンテナに入る | `make shell` | コンテナ内でシェルを起動する |
+| コンテナの状態確認 | `make ps` | 起動中のコンテナを確認する |
+| ログ確認 | `make logs` | コンテナのログを表示する |
+| コンテナ再起動 | `make restart` | コンテナを再起動する |
+| 学習終了 | `make down` | コンテナを停止・削除する |
+
+> **💡 Dockerの考え方**
+>
+> - `build`：Dockerイメージを作成・更新する（時間がかかる）
+> - `up`：作成済みのイメージからコンテナを起動する（数秒）
+> - 普段の学習では **`make up`** を使い、**`make build` は `Dockerfile` や `environment.yml` を変更したときだけ**実行する。
+
+## 日常の学習フロー
+
+```text
+make up
+    ↓
+make jupyter
+    ↓
+講義・Notebook作成
+    ↓
+git status
+    ↓
+git add .
+    ↓
+git commit -m "学習内容"
+    ↓
+git push
+    ↓
+make down
+```
